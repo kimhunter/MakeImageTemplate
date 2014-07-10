@@ -45,17 +45,21 @@ ColorComponents colorComponentsFromString(NSString *hexString)
     {
         if ([scanner scanHexInt:&hexValue])
         {
-            if ([hexString length] == 6)
+            uint8_t mask = 0xFF;
+            uint8_t bitPerComponent = 8;
+            if (hexLength == 3)
             {
-                components.red   = (hexValue >> 16) & 0xFF;
-                components.green = (hexValue >>  8) & 0xFF;
-                components.blue  = (hexValue >>  0) & 0xFF;
+                bitPerComponent = 4;
+                mask = 0xF;
             }
-            else
+            components.red   = (hexValue >> (bitPerComponent * 2)) & mask;
+            components.green = (hexValue >> (bitPerComponent * 1)) & mask;
+            components.blue  = (hexValue >> (bitPerComponent * 0)) & mask;
+            if (hexLength == 3)
             {
-                components.red   = (hexValue >> 8) & 0xF;
-                components.green = (hexValue >> 4) & 0xF;
-                components.blue  = (hexValue >> 0) & 0xF;
+                components.red   |= (components.red   << bitPerComponent);
+                components.green |= (components.green << bitPerComponent);
+                components.blue  |= (components.blue  << bitPerComponent);
             }
         }
     }
