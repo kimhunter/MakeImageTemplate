@@ -28,30 +28,68 @@
 #import <Cocoa/Cocoa.h>
 #import <libkern/OSAtomic.h>
 
-BOOL convertImageToColoredTemplate(NSString *srcPath, NSString *destPath, UInt8 r, UInt8 g, UInt8 b);
+typedef struct {
+    uint8_t red;
+    uint8_t green;
+    uint8_t blue;
+} ColorComponents;
+
+ColorComponents colorComponentsFromString(NSString *hexString)
+{
+    ColorComponents components = {.red = 0, .green = 0, .blue = 0};
+    NSUInteger hexLength = [hexString length];
+    NSScanner *scanner = [NSScanner scannerWithString:hexString];
+    unsigned int hexValue = 0;
+    
+    if (hexLength == 3 || hexLength == 6)
+    {
+        if ([scanner scanHexInt:&hexValue])
+        {
+            if ([hexString length] == 6)
+            {
+                components.red   = (hexValue >> 16) & 0xFF;
+                components.green = (hexValue >>  8) & 0xFF;
+                components.blue  = (hexValue >>  0) & 0xFF;
+            }
+            else
+            {
+                components.red   = (hexValue >> 8) & 0xF;
+                components.green = (hexValue >> 4) & 0xF;
+                components.blue  = (hexValue >> 0) & 0xF;
+            }
+        }
+    }
+    return components;
+}
+
+BOOL convertImageToColoredTemplate(NSString *srcPath, NSString *destPath, const ColorComponents);
 
 int main(int argc, const char * argv[]) {
     
     __block volatile int64_t failedConversions = 0;
     
     @autoreleasepool {
-        
+        ColorComponents paintColor = colorComponentsFromString([[NSUserDefaults standardUserDefaults] stringForKey:@"Hex"]);
+
         NSArray *args = [[NSProcessInfo processInfo] arguments];
+        
+        NSLog(@"%@", [[NSUserDefaults standardUserDefaults] stringForKey:@"Hex"]);
         
         // take only png files that exist
         NSArray *pngFiles = [args filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSString *maybePath, NSDictionary *bindings) {
             return [[[maybePath pathExtension] lowercaseString] hasSuffix:@"png"]
-            && [[NSFileManager defaultManager] fileExistsAtPath:maybePath];
+                && [[NSFileManager defaultManager] fileExistsAtPath:maybePath];
         }]];
         
         // dec each success which will leave us with the failings
         failedConversions = [pngFiles count];
         
+        
         NSEnumerationOptions enumOptions = ([pngFiles count] > 2) ? NSEnumerationConcurrent : 0;
         [pngFiles enumerateObjectsWithOptions:enumOptions usingBlock:^(NSString *pngPath, NSUInteger idx, BOOL *stop) {
             NSString *basePath = [pngPath stringByDeletingPathExtension];
             NSString *destPath = [[basePath stringByAppendingString:@".template"] stringByAppendingPathExtension:[pngPath pathExtension]];
-            if (convertImageToColoredTemplate(pngPath, destPath, 0, 0, 0))
+            if (convertImageToColoredTemplate(pngPath, destPath, paintColor))
             {
                 OSAtomicDecrement64(&failedConversions);
             }
@@ -66,7 +104,7 @@ int main(int argc, const char * argv[]) {
 #define AlphaPixel 3
 
 #define PixelIsNotTotalyTransparent(P) ((P)[AlphaPixel] != 0x00)
-BOOL convertImageToColoredTemplate(NSString *srcPath, NSString *destPath, UInt8 r, UInt8 g, UInt8 b)
+BOOL convertImageToColoredTemplate(NSString *srcPath, NSString *destPath, const ColorComponents fillColor)
 {
     NSBitmapImageRep *imageRep = [[NSBitmapImageRep alloc] initWithData:[[NSData alloc] initWithContentsOfFile:srcPath]];
     
@@ -88,9 +126,9 @@ BOOL convertImageToColoredTemplate(NSString *srcPath, NSString *destPath, UInt8 
             // we want to paint any pixel that isn't totally transparent
             if (PixelIsNotTotalyTransparent(pixel))
             {
-                pixel[RedPixel]   = r;
-                pixel[GreenPixel] = g;
-                pixel[BluePixel]  = b;
+                pixel[RedPixel]   = fillColor.red;
+                pixel[GreenPixel] = fillColor.green;
+                pixel[BluePixel]  = fillColor.blue;
             }
             pixel += pixelByteSize;
         }
