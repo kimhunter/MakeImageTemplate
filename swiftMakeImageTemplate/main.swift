@@ -23,7 +23,9 @@ struct ColorComponents {
         var hexValue: UInt32 = 0
         let hexLength = countElements(hex)
         var scanner = NSScanner.scannerWithString(hex)
-        if contains([1,2,3,6], hexLength) && scanner.scanHexInt(&hexValue)
+
+        let validLenghts = [1,2,3,6]
+        if contains(validLenghts, hexLength) && scanner.scanHexInt(&hexValue)
         {
             hexValue = expandComponentValues(hexValue, hexLength: UInt32(hexLength))
             red = UInt8((value >> 16) & 0xFF)
