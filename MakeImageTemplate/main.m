@@ -33,10 +33,12 @@ typedef struct {
     uint8_t green;
     uint8_t blue;
 } ColorComponents;
+const ColorComponents BlackColorComponents = {.red = 0, .green = 0, .blue = 0};
+
 
 ColorComponents colorComponentsFromString(NSString *hexString)
 {
-    ColorComponents components = {.red = 0, .green = 0, .blue = 0};
+    ColorComponents components = BlackColorComponents;
     NSUInteger hexLength = [hexString length];
     NSScanner *scanner = [NSScanner scannerWithString:hexString];
     unsigned int hexValue = 0;
@@ -68,16 +70,17 @@ ColorComponents colorComponentsFromString(NSString *hexString)
 
 BOOL convertImageToColoredTemplate(NSString *srcPath, NSString *destPath, const ColorComponents);
 
-int main(int argc, const char * argv[]) {
+int main(int argc, const char * argv[])
+{
     
     __block volatile int64_t failedConversions = 0;
-    
-    @autoreleasepool {
-        ColorComponents paintColor = colorComponentsFromString([[NSUserDefaults standardUserDefaults] stringForKey:@"Hex"]);
 
-        NSArray *args = [[NSProcessInfo processInfo] arguments];
+    @autoreleasepool {
         
-        NSLog(@"%@", [[NSUserDefaults standardUserDefaults] stringForKey:@"Hex"]);
+        ColorComponents paintColor;
+        paintColor = colorComponentsFromString([[NSUserDefaults standardUserDefaults] stringForKey:@"Hex"]);
+        
+        NSArray *args = [[NSProcessInfo processInfo] arguments];
         
         // take only png files that exist
         NSArray *pngFiles = [args filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSString *maybePath, NSDictionary *bindings) {
