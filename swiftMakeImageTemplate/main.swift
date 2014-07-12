@@ -44,10 +44,10 @@ struct ColorComponents {
     // b&w: 0F -> 0F0F0F ; E -> EEEEEE
     func expandComponentValues(value: UInt32, hexLength:UInt32) -> UInt32
     {
-        func hexHalfByteRepeatedValueAtOffset(value: UInt32, offset: UInt8) -> UInt8
+        func expandedHalfByte(value: UInt32, offset: UInt32) -> UInt32
         {
-            let value = UInt8((value >> UInt32(4 * offset)) & 0xF)
-            return value | (value << 4);
+            let value = (value >> (4 * offset)) & 0xF
+            return (value | (value << 4));
         }
         
         var resValue = value & 0xFFFFFF;
@@ -55,12 +55,12 @@ struct ColorComponents {
         
         switch length {
         case 1:
-            resValue = UInt32(hexHalfByteRepeatedValueAtOffset(resValue, 0))
+            resValue = expandedHalfByte(resValue, 0)
             fallthrough
         case 2:
             resValue |= resValue << 8 | resValue << 16
         case 3:
-            resValue = (0..<3).map{ UInt32(hexHalfByteRepeatedValueAtOffset(resValue, $0)) << UInt32($0 * 8) }.reduce(0){ $0 | $1 }
+            resValue = (0..<3).map{ expandedHalfByte(resValue, $0) << ($0 * 8) }.reduce(0){ $0 | $1 }
         case 6:
             return resValue
         default:
