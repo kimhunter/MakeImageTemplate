@@ -74,15 +74,18 @@ func convertImageToColoredTemplate(srcPath: String, destPath: String, fillColor:
     let totalPixels = imageRep.pixelsHigh * imageRep.pixelsWide
     let pixelBits = imageRep.bitsPerPixel
     let pixelByteSize = pixelBits / imageRep.bitsPerSample
-    if (!(pixelByteSize == 4 && pixelBits == 32)) {
+    if (!(pixelByteSize == 4 && pixelBits == 32))
+    {
         println("can only handle 4 byte pixels and 32 bits per pixel, \(srcPath) = {pixelByteSize=\(pixelByteSize), pixelBits=\(pixelBits)} ")
         return false
     }
     
     var bitmapData = imageRep.bitmapData
     
-    for _ in 0..<totalPixels {
-        if bitmapData[3] != 0 {
+    for _ in 0..<totalPixels
+    {
+        if bitmapData[3] != 0
+        {
             bitmapData[0] = fillColor.red
             bitmapData[1] = fillColor.green
             bitmapData[2] = fillColor.blue
@@ -90,7 +93,8 @@ func convertImageToColoredTemplate(srcPath: String, destPath: String, fillColor:
         bitmapData += pixelByteSize
     }
     
-    if let imageData = imageRep.representationUsingType(.NSPNGFileType, properties: [NSImageGamma : 0]) {
+    if let imageData = imageRep.representationUsingType(.NSPNGFileType, properties: [NSImageGamma : 0])
+    {
         return imageData.writeToFile(destPath, atomically: true)
     }
     return false
@@ -109,7 +113,7 @@ let args = Process.arguments
 let fileMan = NSFileManager.defaultManager()
 
 // Parse params
-let pngFilePaths = Process.arguments.filter {$0.pathExtension.lowercaseString == "png" && fileMan.fileExistsAtPath($0)}
+let pngFilePaths = Process.arguments.filter { $0.pathExtension.lowercaseString == "png" && fileMan.fileExistsAtPath($0) }
 let overwrite = contains(Process.arguments, "-overwrite")
 let paintColor = paintColorFromArguments()
 
