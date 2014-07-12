@@ -27,7 +27,7 @@ struct ColorComponents {
         
         let hexLength = countElements(hex)
         var scanner = NSScanner.scannerWithString(hex)
-        var hexValue: UInt32 = 0;
+        var hexValue: UInt32 = 0
         
         if scanner.scanHexInt(&hexValue)
         {
@@ -45,10 +45,10 @@ struct ColorComponents {
         func expandedHalfByte(value: UInt32, offset: UInt32) -> UInt32
         {
             let value = (value >> (4 * offset)) & 0xF
-            return (value | (value << 4));
+            return (value | (value << 4))
         }
         
-        var resValue = value & 0xFFFFFF;
+        var resValue = value & 0xFF_FF_FF
         var length = hexLength
         
         switch length {
@@ -66,7 +66,6 @@ struct ColorComponents {
         }
         return resValue
     }
-
 }
 
 func convertImageToColoredTemplate(srcPath: String, destPath: String, fillColor: ColorComponents) -> Bool
@@ -77,7 +76,7 @@ func convertImageToColoredTemplate(srcPath: String, destPath: String, fillColor:
     let pixelByteSize = pixelBits / imageRep.bitsPerSample
     if (!(pixelByteSize == 4 && pixelBits == 32)) {
         println("can only handle 4 byte pixels and 32 bits per pixel, \(srcPath) = {pixelByteSize=\(pixelByteSize), pixelBits=\(pixelBits)} ")
-        return false;
+        return false
     }
     
     var bitmapData = imageRep.bitmapData
@@ -103,7 +102,7 @@ func paintColorFromArguments() -> ColorComponents
     {
         return ColorComponents(hex: NSUserDefaults.standardUserDefaults().stringForKey("Hex"))
     }
-    return ColorComponents();
+    return ColorComponents()
 }
 
 let args = Process.arguments
@@ -122,7 +121,7 @@ for pngPath in pngFilePaths
     
     if (convertImageToColoredTemplate(pngPath, destPath, paintColor))
     {
-        OSAtomicDecrement64(&failedConversions);
+        OSAtomicDecrement64(&failedConversions)
     }
 }
 
