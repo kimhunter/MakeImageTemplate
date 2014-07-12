@@ -20,21 +20,15 @@ struct ColorComponents {
     
     init(hex: String)
     {
-        func hexByteValueAtOffset(value: UInt32, offset: UInt32) -> UInt8
-        {
-            return UInt8((value >> (8 * offset)) & 0xFF)
-        }
-        
+        var hexValue: UInt32 = 0
         let hexLength = countElements(hex)
         var scanner = NSScanner.scannerWithString(hex)
-        var hexValue: UInt32 = 0
-        
         if contains([1,2,3,6], hexLength) && scanner.scanHexInt(&hexValue)
         {
             hexValue = expandComponentValues(hexValue, hexLength: UInt32(hexLength))
-            red = hexByteValueAtOffset(hexValue, 2)
-            green = hexByteValueAtOffset(hexValue, 1)
-            blue = hexByteValueAtOffset(hexValue, 0)
+            red = UInt8((value >> 16) & 0xFF)
+            green = UInt8((value >> 8) & 0xFF)
+            blue = UInt8(value & 0xFF)
         }
     }
     // expand shorthand hex colors
