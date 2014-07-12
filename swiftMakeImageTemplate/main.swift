@@ -29,7 +29,7 @@ struct ColorComponents {
         var scanner = NSScanner.scannerWithString(hex)
         var hexValue: UInt32 = 0
         
-        if scanner.scanHexInt(&hexValue)
+        if contains([1,2,3,6], hexLength) && scanner.scanHexInt(&hexValue)
         {
             hexValue = expandComponentValues(hexValue, hexLength: UInt32(hexLength))
             red = hexByteValueAtOffset(hexValue, 2)
@@ -104,7 +104,12 @@ func paintColorFromArguments() -> ColorComponents
 {
     if let hexString = NSUserDefaults.standardUserDefaults().stringForKey("Hex")
     {
-        return ColorComponents(hex: NSUserDefaults.standardUserDefaults().stringForKey("Hex"))
+        // a good string will be trimmed to nothing
+        let hasBadChars = countElements(hexString.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: "0123456789ABCDEFabcdef"))) == 0
+        if hasBadChars
+        {
+            return ColorComponents(hex: hexString)
+        }
     }
     return ColorComponents()
 }
