@@ -7,10 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3B8F72BA1971425900D3CDE2 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8F72B91971425900D3CDE2 /* main.swift */; };
 		3BBEA2A5196D1CED0055EE6B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BBEA2A4196D1CED0055EE6B /* main.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		3B8F72B51971425900D3CDE2 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 		3BBEA29F196D1CED0055EE6B /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -23,11 +33,20 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3B8F72B71971425900D3CDE2 /* swiftMakeImageTemplate */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = swiftMakeImageTemplate; sourceTree = BUILT_PRODUCTS_DIR; };
+		3B8F72B91971425900D3CDE2 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		3BBEA2A1196D1CED0055EE6B /* MakeImageTemplate */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MakeImageTemplate; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BBEA2A4196D1CED0055EE6B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		3B8F72B41971425900D3CDE2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3BBEA29E196D1CED0055EE6B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -38,10 +57,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3B8F72B81971425900D3CDE2 /* swiftMakeImageTemplate */ = {
+			isa = PBXGroup;
+			children = (
+				3B8F72B91971425900D3CDE2 /* main.swift */,
+			);
+			path = swiftMakeImageTemplate;
+			sourceTree = "<group>";
+		};
 		3BBEA298196D1CED0055EE6B = {
 			isa = PBXGroup;
 			children = (
 				3BBEA2A3196D1CED0055EE6B /* MakeImageTemplate */,
+				3B8F72B81971425900D3CDE2 /* swiftMakeImageTemplate */,
 				3BBEA2A2196D1CED0055EE6B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -50,6 +78,7 @@
 			isa = PBXGroup;
 			children = (
 				3BBEA2A1196D1CED0055EE6B /* MakeImageTemplate */,
+				3B8F72B71971425900D3CDE2 /* swiftMakeImageTemplate */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -65,6 +94,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		3B8F72B61971425900D3CDE2 /* swiftMakeImageTemplate */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3B8F72BD1971425900D3CDE2 /* Build configuration list for PBXNativeTarget "swiftMakeImageTemplate" */;
+			buildPhases = (
+				3B8F72B31971425900D3CDE2 /* Sources */,
+				3B8F72B41971425900D3CDE2 /* Frameworks */,
+				3B8F72B51971425900D3CDE2 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = swiftMakeImageTemplate;
+			productName = swiftMakeImageTemplate;
+			productReference = 3B8F72B71971425900D3CDE2 /* swiftMakeImageTemplate */;
+			productType = "com.apple.product-type.tool";
+		};
 		3BBEA2A0196D1CED0055EE6B /* MakeImageTemplate */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3BBEA2A8196D1CED0055EE6B /* Build configuration list for PBXNativeTarget "MakeImageTemplate" */;
@@ -91,6 +137,9 @@
 				LastUpgradeCheck = 0600;
 				ORGANIZATIONNAME = "Kim Hunter";
 				TargetAttributes = {
+					3B8F72B61971425900D3CDE2 = {
+						CreatedOnToolsVersion = 6.0;
+					};
 					3BBEA2A0196D1CED0055EE6B = {
 						CreatedOnToolsVersion = 6.0;
 					};
@@ -109,11 +158,20 @@
 			projectRoot = "";
 			targets = (
 				3BBEA2A0196D1CED0055EE6B /* MakeImageTemplate */,
+				3B8F72B61971425900D3CDE2 /* swiftMakeImageTemplate */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		3B8F72B31971425900D3CDE2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3B8F72BA1971425900D3CDE2 /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3BBEA29D196D1CED0055EE6B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -125,6 +183,25 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		3B8F72BB1971425900D3CDE2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		3B8F72BC1971425900D3CDE2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		3BBEA2A6196D1CED0055EE6B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -218,6 +295,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		3B8F72BD1971425900D3CDE2 /* Build configuration list for PBXNativeTarget "swiftMakeImageTemplate" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3B8F72BB1971425900D3CDE2 /* Debug */,
+				3B8F72BC1971425900D3CDE2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		3BBEA29C196D1CED0055EE6B /* Build configuration list for PBXProject "MakeImageTemplate" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
