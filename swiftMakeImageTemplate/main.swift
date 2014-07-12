@@ -112,7 +112,7 @@ let fileMan = NSFileManager.defaultManager()
 // Parse params
 let pngFilePaths = Process.arguments.filter {$0.pathExtension.lowercaseString == "png" && fileMan.fileExistsAtPath($0)}
 let overwrite = contains(Process.arguments, "-overwrite")
-var paintColor = paintColorFromArguments()
+let paintColor = paintColorFromArguments()
 
 
 var failedConversions = Int64(pngFilePaths.count)
