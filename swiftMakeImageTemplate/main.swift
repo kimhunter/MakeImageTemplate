@@ -14,56 +14,61 @@ struct ColorComponents {
     var green: UInt8 = 0
     var blue: UInt8 = 0
     
-    init()
-    {
-        self.init()
-    }
-    
-    init(r: UInt8, g: UInt8, b: UInt8)
-    {
-        red = r
-        green = g
-        blue = b
-    }
+    init() { self.init(r:0,g:0,b:0) }
+    init(r: UInt8, g: UInt8, b: UInt8) { red = r; green = g; blue = b }
+    init(white: UInt8) { self.init(r: white, g: white, b: white) }
     
     init(hex: String)
     {
-        self.init(r: 3, g: 4, b: 5)
-    }
-}
-
-func colorComponentsFromString(hexString: String) -> ColorComponents
-{
-    var components = ColorComponents()
-    let hexLength = hexString.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
-    
-    
-    var scanner = NSScanner.scannerWithString(hexString)
-    var hexValue : UInt32 = 0;
-    if (hexLength == 3 || hexLength == 6)
-    {
-        if (scanner.scanHexInt(&hexValue))
+        func hexByteValueAtOffset(value: UInt32, offset: UInt32) -> UInt8
         {
-            var mask : UInt32 = 0xFF;
-            var bitPerComponent : UInt32 = 8;
-            if (hexLength == 3)
-            {
-                bitPerComponent = 4;
-                mask = 0xF;
-            }
-            components.red   = UInt8((hexValue >> (bitPerComponent * 2)) & mask);
-            components.green = UInt8((hexValue >> (bitPerComponent * 1)) & mask);
-            components.blue  = UInt8((hexValue >> (bitPerComponent * 0)) & mask);
-            if (hexLength == 3)
-            {
-                let shift = UInt8(bitPerComponent)
-                components.red   |= (components.red   << shift);
-                components.green |= (components.green << shift);
-                components.blue  |= (components.blue  << shift);
-            }
+            let offset32 = UInt32(8 * offset)
+            return UInt8((value >> offset32) & 0xFF)
+        }
+        
+        let hexLength = hex.lengthOfBytesUsingEncoding(NSASCIIStringEncoding)
+        var scanner = NSScanner.scannerWithString(hex)
+        var hexValue: UInt32 = 0;
+        
+        if scanner.scanHexInt(&hexValue)
+        {
+            var len = UInt32(hexLength)
+            hexValue = expandComponentValues(hexValue, hexLength: len)
+            red = hexByteValueAtOffset(hexValue, 2)
+            green = hexByteValueAtOffset(hexValue, 1)
+            blue = hexByteValueAtOffset(hexValue, 0)
         }
     }
-    return components;
+    // expand shorthand hex colors
+    // colours: 0F0 -> 00FF00 
+    // b&w: 0F -> 0F0F0F ; E -> EEEEEE
+    func expandComponentValues(value: UInt32, hexLength:UInt32) -> UInt32
+    {
+        func hexHalfByteRepeatedValueAtOffset(value: UInt32, offset: UInt8) -> UInt8
+        {
+            let value = UInt8((value >> UInt32(4 * offset)) & 0xF)
+            return value | (value << 4);
+        }
+        
+        var resValue = value & 0xFFFFFF;
+        var length = hexLength
+        
+        switch length {
+        case 1:
+            resValue = UInt32(hexHalfByteRepeatedValueAtOffset(resValue, 0))
+            fallthrough
+        case 2:
+            resValue |= resValue << 8 | resValue << 16
+        case 3:
+            resValue = (0..<3).map{ UInt32(hexHalfByteRepeatedValueAtOffset(resValue, $0)) << UInt32($0 * 8) }.reduce(0){ $0 | $1 }
+        case 6:
+            return resValue
+        default:
+            resValue = 0
+        }
+        return resValue
+    }
+
 }
 
 func convertImageToColoredTemplate(srcPath: String, destPath: String, fillColor: ColorComponents) -> Bool
@@ -94,14 +99,29 @@ func convertImageToColoredTemplate(srcPath: String, destPath: String, fillColor:
     return false
 }
 
+func paintColorFromArguments() -> ColorComponents
+{
+    if let hexString = NSUserDefaults.standardUserDefaults().stringForKey("Hex")
+    {
+        return ColorComponents(hex: NSUserDefaults.standardUserDefaults().stringForKey("Hex"))
+    }
+    return ColorComponents();
+}
+
+let args = Process.arguments
 let fm = NSFileManager.defaultManager()
+
+// Parse params
 let pngFilePaths = Process.arguments.filter {$0.pathExtension.lowercaseString == "png" && fm.fileExistsAtPath($0)}
-let paintColor = ColorComponents()
+let overwrite = contains(Process.arguments, "-overwrite")
+var paintColor = paintColorFromArguments()
+
+
 var failedConversions = Int64(pngFilePaths.count)
 for pngPath in pngFilePaths
 {
-    let basePath = pngPath.stringByDeletingPathExtension
-    let destPath = basePath.stringByAppendingString(".template").stringByAppendingPathExtension(pngPath.pathExtension)
+    let destPath = overwrite ? pngPath : pngPath.stringByDeletingPathExtension.stringByAppendingString(".template").stringByAppendingPathExtension(pngPath.pathExtension)
+    
     if (convertImageToColoredTemplate(pngPath, destPath, paintColor))
     {
         OSAtomicDecrement64(&failedConversions);
