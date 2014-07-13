@@ -101,8 +101,8 @@ func paintColorFromArguments() -> ColorComponents
     if let hexString = NSUserDefaults.standardUserDefaults().stringForKey("Hex")
     {
         // a good string will be trimmed to nothing
-        let hasBadChars = countElements(hexString.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: "0123456789ABCDEFabcdef"))) == 0
-        if hasBadChars
+        let hasOnlyGoodChars = countElements(hexString.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: "0123456789ABCDEFabcdef"))) == 0
+        if hasOnlyGoodChars
         {
             return ColorComponents(hex: hexString)
         }
